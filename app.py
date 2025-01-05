@@ -108,13 +108,11 @@ def display_field():
 
     st.pyplot(fig)
 
-    position = pd.DataFrame()
-    position = position_df['Yards to Go X Position', 'X Position', 'Y Position']
-    position['Direction'] = 1
-    position = position['Direction', 'Yards to Go X Position', 'X Position', 'Y Position']
+    position = position_df[['Yards to Go X Position', 'X Position', 'Y Position']].copy()
+    position['Direction'] = 1  # Menambahkan kolom Direction
     position['X Position'] = position['X Position'] + 10
     position['Yards to Go X Position'] = position['Yards to Go X Position'] + 10
-    position['Yards to Go X Position'] = position['Yards to Go X Position'] - position['X Position'][22]
+    position['Yards to Go X Position'] = position['Yards to Go X Position'] - position['X Position'].iloc[22]
 
     # Menampilkan DataFrame
     st.write("position data frame:")
