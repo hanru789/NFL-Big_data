@@ -113,7 +113,7 @@ def display_field():
     position['X Position'] = position['X Position'] + 10
     position['Yards to Go X Position'] = position['Yards to Go X Position'] + 10
     position['Yards to Go X Position'] = position['Yards to Go X Position'] - position['X Position'].iloc[22]
-    position = position['Direction', 'Yards to Go X Position', 'X Position', 'Y Position']
+    position = position[['Direction', 'Yards to Go X Position', 'X Position', 'Y Position']]
     
     # Menampilkan DataFrame
     st.write("position data frame:")
