@@ -51,18 +51,18 @@ def display_field():
     # Input posisi untuk Blue Team di sidebar
     st.sidebar.header("Blue Team")
     blue_players_input = []
-    # Menyusun pemain biru di sebelah kiri menggunakan slider
+    # Menyusun pemain biru di sebelah kiri menggunakan slider dengan rentang sumbu X (0-100)
     for i in range(11):
-        x_pos = st.sidebar.slider(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=50.0, value=10.0, step=0.1)
+        x_pos = st.sidebar.slider(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=100.0, value=10.0, step=0.1)
         y_pos = st.sidebar.slider(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=(i+1)*4.5, step=0.1)  # Susun vertikal
         blue_players_input.append((y_pos, x_pos))
 
     # Input posisi untuk Red Team di sidebar
     st.sidebar.header("Red Team")
     red_players_input = []
-    # Menyusun pemain merah di sebelah kanan menggunakan slider
+    # Menyusun pemain merah di sebelah kanan menggunakan slider dengan rentang sumbu X (0-100)
     for i in range(11):
-        x_pos = st.sidebar.slider(f"Player {i+1} X Position (Red Team)", min_value=50.0, max_value=100.0, value=90.0, step=0.1)
+        x_pos = st.sidebar.slider(f"Player {i+1} X Position (Red Team)", min_value=0.0, max_value=100.0, value=90.0, step=0.1)
         y_pos = st.sidebar.slider(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=(i+1)*4.5, step=0.1)  # Susun vertikal
         red_players_input.append((y_pos, x_pos))
 
@@ -71,7 +71,7 @@ def display_field():
                      st.sidebar.slider("Ball X Position", min_value=0.0, max_value=100.0, value=50.0, step=0.1))
 
     # Input untuk Yards to Go Line (garis vertikal oranye) menggunakan slider
-    yards_to_go_x = st.sidebar.slider("Yards to Go Line (X Position)", min_value=10, max_value=90, value=50, step=1)
+    yards_to_go_x = st.sidebar.slider("Yards to Go Line (X Position)", min_value=0, max_value=100, value=50, step=1)
 
     # Menampilkan lapangan dan pemain di Streamlit
     fig, ax = create_nfl_field()
