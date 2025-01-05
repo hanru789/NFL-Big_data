@@ -1,78 +1,84 @@
 import streamlit as st
 import plotly.graph_objects as go
-import random
 
-# Fungsi untuk membuat lapangan NFL
-def create_nfl_field():
+# Ukuran lapangan NFL (panjang dan lebar)
+field_length = 120  # Yard
+field_width = 53.33  # Yard
+
+# Fungsi untuk menggambar lapangan NFL
+def draw_field():
     fig = go.Figure()
 
-    # Menambahkan lapangan NFL
-    fig.add_shape(type="rect", x0=0, y0=0, x1=100, y1=53.3,
-                  line=dict(color="green", width=2), fillcolor="lightgreen")
+    # Lapangan NFL
+    fig.add_shape(
+        type="rect",
+        x0=0, y0=0,
+        x1=field_length, y1=field_width,
+        line=dict(color="green", width=4),
+        fillcolor="green"
+    )
 
-    # Membuat garis-garis lapangan
-    for i in range(1, 11):
-        fig.add_shape(type="line", x0=i * 10, y0=0, x1=i * 10, y1=53.3,
-                      line=dict(color="white", width=1))
+    # Garis-garis lapangan
+    for y in range(0, field_width + 1, 10):
+        fig.add_shape(
+            type="line",
+            x0=0, y0=y,
+            x1=field_length, y1=y,
+            line=dict(color="white", width=2)
+        )
+    for x in range(0, field_length + 1, 10):
+        fig.add_shape(
+            type="line",
+            x0=x, y0=0,
+            x1=x, y1=field_width,
+            line=dict(color="white", width=2)
+        )
 
-    # Menambahkan garis gawang
-    fig.add_shape(type="line", x0=0, y0=0, x1=0, y1=53.3, line=dict(color="white", width=2))
-    fig.add_shape(type="line", x0=100, y0=0, x1=100, y1=53.3, line=dict(color="white", width=2))
-
-    # Menambahkan label "End Zone"
-    fig.add_annotation(x=2, y=26.65, text="End Zone", showarrow=False, font=dict(size=12, color="white"), align="center")
-    fig.add_annotation(x=98, y=26.65, text="End Zone", showarrow=False, font=dict(size=12, color="white"), align="center")
+    # Penanda yard (di setiap 10 yard)
+    for x in range(0, field_length + 1, 10):
+        fig.add_trace(go.Scatter(
+            x=[x],
+            y=[field_width / 2],
+            mode='markers+text',
+            marker=dict(size=10, color='white'),
+            text=[f'{x}'],
+            textposition="bottom center",
+            showlegend=False
+        ))
 
     return fig
 
-# Fungsi untuk menambahkan pemain dan bola
-def add_players_and_ball(fig, blue_players, red_players, ball_position):
-    # Menambahkan 11 pemain biru dengan nomor
-    for idx, player in enumerate(blue_players):
-        fig.add_trace(go.Scatter(x=[player[1]], y=[player[0]], mode="markers+text", text=[str(idx+1)],
-                                 marker=dict(color="blue", size=15), textposition="middle center", name=f"Blue {idx+1}"))
+# Daftar pemain (posisi awal)
+players = [
+    {"name": "Pemain 1", "x": 20, "y": 25},
+    {"name": "Pemain 2", "x": 40, "y": 40},
+    {"name": "Pemain 3", "x": 60, "y": 30},
+    {"name": "Pemain 4", "x": 80, "y": 50},
+]
 
-    # Menambahkan 11 pemain merah dengan nomor
-    for idx, player in enumerate(red_players):
-        fig.add_trace(go.Scatter(x=[player[1]], y=[player[0]], mode="markers+text", text=[str(idx+1)],
-                                 marker=dict(color="red", size=15), textposition="middle center", name=f"Red {idx+1}"))
+# Fungsi untuk menggambar pemain
+def draw_players(fig, players):
+    for player in players:
+        fig.add_trace(go.Scatter(
+            x=[player["x"]],
+            y=[player["y"]],
+            mode='markers+text',
+            marker=dict(size=12, color='red'),
+            text=[player["name"]],
+            textposition="top center",
+            draggable=True,  # Menambahkan fitur drag (perlu implementasi tambahan)
+            showlegend=False
+        ))
 
-    # Menambahkan bola
-    fig.add_trace(go.Scatter(x=[ball_position[1]], y=[ball_position[0]], mode="markers",
-                             marker=dict(color="white", size=20, symbol="circle"), name="Ball"))
+# Membuat halaman Streamlit
+st.title("Aplikasi Lapangan NFL")
 
-# Fungsi untuk mengatur interaksi drag-and-drop
-def display_field():
-    st.title("NFL Field Drag-and-Drop Simulation")
+# Gambar lapangan NFL
+fig = draw_field()
 
-    # Input posisi untuk Blue Team
-    blue_players_input = []
-    for i in range(11):
-        blue_players_input.append([random.uniform(0, 53.3), random.uniform(0, 100)])
+# Gambar pemain di lapangan
+draw_players(fig, players)
 
-    # Input posisi untuk Red Team
-    red_players_input = []
-    for i in range(11):
-        red_players_input.append([random.uniform(0, 53.3), random.uniform(0, 100)])
+# Menampilkan plot
+st.plotly_chart(fig)
 
-    # Input posisi bola
-    ball_position = [random.uniform(0, 53.3), random.uniform(0, 100)]
-
-    # Membuat lapangan dan menambahkan pemain serta bola
-    fig = create_nfl_field()
-    add_players_and_ball(fig, blue_players_input, red_players_input, ball_position)
-
-    # Menambahkan kemampuan untuk drag pemain dan bola
-    fig.update_layout(
-        dragmode="select",  # Mengizinkan drag (gunakan select untuk memindahkan pemain)
-        xaxis=dict(range=[0, 100], showgrid=False, zeroline=False),
-        yaxis=dict(range=[0, 53.3], showgrid=False, zeroline=False),
-        title="NFL Field (Drag Players and Ball)",
-    )
-
-    # Menampilkan grafik di Streamlit
-    st.plotly_chart(fig)
-
-# Menampilkan aplikasi
-if __name__ == "__main__":
-    display_field()
