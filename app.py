@@ -46,19 +46,19 @@ def display_field():
     # Input posisi untuk Blue Team di sidebar
     st.sidebar.header("Blue Team")
     blue_players_input = []
+    # Menyusun pemain biru di sebelah kiri
     for i in range(11):
-        # Menambahkan input untuk posisi X dan Y pemain Blue Team (X lebih kecil dari 50)
-        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=50.0, value=5.0, step=0.1)
-        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=26.65, step=0.1)
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=50.0, value=10.0, step=0.1)
+        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=(i+1)*4.5, step=0.1)  # Susun vertikal
         blue_players_input.append((y_pos, x_pos))
 
     # Input posisi untuk Red Team di sidebar
     st.sidebar.header("Red Team")
     red_players_input = []
+    # Menyusun pemain merah di sebelah kanan
     for i in range(11):
-        # Menambahkan input untuk posisi X dan Y pemain Red Team (X lebih besar dari 50)
-        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Red Team)", min_value=50.0, max_value=100.0, value=95.0, step=0.1)
-        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=26.65, step=0.1)
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Red Team)", min_value=50.0, max_value=100.0, value=90.0, step=0.1)
+        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=(i+1)*4.5, step=0.1)  # Susun vertikal
         red_players_input.append((y_pos, x_pos))
 
     # Inisialisasi bola di posisi acak yang bisa diubah sesuai kebutuhan
@@ -73,8 +73,8 @@ def display_field():
     ax.set_ylim(0, 53.3)
     ax.set_aspect('equal')
 
-    ax.set_xticks([])  # Menghilangkan ticks pada sumbu X
-    ax.set_yticks([])  # Menghilangkan ticks pada sumbu Y
+    ax.set_xticks([])
+    ax.set_yticks([])
 
     st.pyplot(fig)
 
