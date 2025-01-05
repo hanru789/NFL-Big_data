@@ -4,7 +4,7 @@ import matplotlib.patches as patches
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 import joblib
-from tensorflow.keras.models import lod_model
+from tensorflow.keras.models import load_model
 
 
 model = load_model('model_test.h5')
