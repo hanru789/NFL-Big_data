@@ -30,16 +30,16 @@ def add_players_and_ball(fig, blue_players, red_players, ball_position):
     # Menambahkan 11 pemain biru dengan nomor
     for idx, player in enumerate(blue_players):
         fig.add_trace(go.Scatter(x=[player[1]], y=[player[0]], mode="markers+text", text=[str(idx+1)],
-                                 marker=dict(color="blue", size=15), textposition="middle center"))
+                                 marker=dict(color="blue", size=15), textposition="middle center", name=f"Blue {idx+1}"))
 
     # Menambahkan 11 pemain merah dengan nomor
     for idx, player in enumerate(red_players):
         fig.add_trace(go.Scatter(x=[player[1]], y=[player[0]], mode="markers+text", text=[str(idx+1)],
-                                 marker=dict(color="red", size=15), textposition="middle center"))
+                                 marker=dict(color="red", size=15), textposition="middle center", name=f"Red {idx+1}"))
 
     # Menambahkan bola
     fig.add_trace(go.Scatter(x=[ball_position[1]], y=[ball_position[0]], mode="markers",
-                             marker=dict(color="white", size=20, symbol="circle")))
+                             marker=dict(color="white", size=20, symbol="circle"), name="Ball"))
 
 # Fungsi untuk mengatur interaksi drag-and-drop
 def display_field():
@@ -64,7 +64,7 @@ def display_field():
 
     # Menambahkan kemampuan untuk drag pemain dan bola
     fig.update_layout(
-        dragmode="turntable",  # Mengizinkan drag
+        dragmode="select",  # Mengizinkan drag (gunakan select untuk memindahkan pemain)
         xaxis=dict(range=[0, 100], showgrid=False, zeroline=False),
         yaxis=dict(range=[0, 53.3], showgrid=False, zeroline=False),
         title="NFL Field (Drag Players and Ball)",
