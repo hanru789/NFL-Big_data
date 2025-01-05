@@ -70,9 +70,16 @@ def display_field():
     ball_position = (st.sidebar.number_input("Ball Y Position", min_value=0.0, max_value=53.3, value=26.65, step=0.1),
                      st.sidebar.number_input("Ball X Position", min_value=0.0, max_value=100.0, value=50.0, step=0.1))
 
+    # Input untuk Yards to Go Line (garis vertikal oranye)
+    yards_to_go_x = st.sidebar.slider("Yards to Go Line (X Position)", min_value=10, max_value=90, value=50, step=1)
+
     # Menampilkan lapangan dan pemain di Streamlit
     fig, ax = create_nfl_field()
     add_players_and_ball(ax, blue_players_input, red_players_input, ball_position)
+
+    # Menambahkan garis vertikal oranye dan keterangan Yards to Go
+    ax.plot([yards_to_go_x, yards_to_go_x], [0, 53.3], color='orange', lw=2)
+    ax.text(yards_to_go_x, 53.5, 'Yards to Go', fontsize=12, ha='center', color='black', weight='bold')
 
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 53.3)
