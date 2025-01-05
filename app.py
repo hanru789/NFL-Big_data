@@ -49,26 +49,21 @@ def display_field():
     red_players = [(random.uniform(0, 53.3), random.uniform(0, 100)) for _ in range(11)]
     ball_position = (random.uniform(0, 53.3), random.uniform(0, 100))
 
-    # Membuat dua kolom untuk input Blue Team dan Red Team
-    col1, col2 = st.columns(2)
+    # Membuat sidebar untuk input Blue Team
+    st.sidebar.header("Blue Team")
+    blue_players_input = []
+    for i in range(11):
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=100.0, value=blue_players[i][1], step=0.1)
+        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=blue_players[i][0], step=0.1)
+        blue_players_input.append((y_pos, x_pos))
 
-    # Input posisi untuk Blue Team di kolom pertama
-    with col1:
-        st.header("Blue Team")
-        blue_players_input = []
-        for i in range(11):
-            x_pos = st.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=100.0, value=blue_players[i][1], step=0.1)
-            y_pos = st.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=blue_players[i][0], step=0.1)
-            blue_players_input.append((y_pos, x_pos))
-
-    # Input posisi untuk Red Team di kolom kedua
-    with col2:
-        st.header("Red Team")
-        red_players_input = []
-        for i in range(11):
-            x_pos = st.number_input(f"Player {i+1} X Position (Red Team)", min_value=0.0, max_value=100.0, value=red_players[i][1], step=0.1)
-            y_pos = st.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=red_players[i][0], step=0.1)
-            red_players_input.append((y_pos, x_pos))
+    # Membuat sidebar untuk input Red Team
+    st.sidebar.header("Red Team")
+    red_players_input = []
+    for i in range(11):
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Red Team)", min_value=0.0, max_value=100.0, value=red_players[i][1], step=0.1)
+        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=red_players[i][0], step=0.1)
+        red_players_input.append((y_pos, x_pos))
 
     # Menampilkan lapangan dan pemain di Streamlit
     fig, ax = create_nfl_field()
