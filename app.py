@@ -141,29 +141,27 @@ def display_field():
     # Menambahkan dimensi batch dan channel
     data = data.reshape(1, 23, 242, 1)
     st.write(f"Reshaped data shape: {data.shape}")
-
     #data = data.reshape(1, -1)
-
     #st.write("Array:", data)
-    
     # Menampilkan DataFrame
     #st.write("position data frame:")
-    
     #st.dataframe(position)
-    
     st.write(data.shape)
     st.write(f"Shape of data: {data.shape}")
     model = load_model('model_test.h5')
     st.write(f"Model input shape: {model.input_shape}")
-    
-    # melakukan prediksi
-    st.write(tf.__version__)
-    
-    
-    
+    # melakukan prediksi 
+    # Load model
+    model = load_model('model_test.h5')
+    st.write(f"Model input shape: {model.input_shape}")
+
+    # Prediksi
     if st.button("Predict"):
-        prediction = model.predict(data)
-        st.write(f"Prediksi: {prediction[0]}")
+        try:
+            prediction = model.predict(data)
+            st.write(f"Prediksi: {prediction[0]}")
+        except Exception as e:
+            st.error(f"Prediction failed: {str(e)}")
 
     
 
