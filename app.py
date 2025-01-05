@@ -147,6 +147,7 @@ def display_field():
     st.write(data.shape)
     
     # melakukan prediksi
+    st.write(tf.__version__)
     model = load_model('model_test.h5')
     if st.button("Predict"):
         prediction = model.predict(data)
