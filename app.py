@@ -27,13 +27,15 @@ def create_nfl_field():
 
 # Fungsi untuk menambahkan pemain dan bola
 def add_players_and_ball(ax, blue_players, red_players, ball_position):
-    # Menambahkan 11 pemain biru
-    for player in blue_players:
-        ax.scatter(player[1], player[0], c='blue', s=100, label="Blue Team")
+    # Menambahkan 11 pemain biru dengan nomor
+    for idx, player in enumerate(blue_players):
+        ax.scatter(player[1], player[0], c='blue', s=100)
+        ax.text(player[1], player[0], str(idx+1), color='white', ha='center', va='center', fontsize=10, weight='bold')
 
-    # Menambahkan 11 pemain merah
-    for player in red_players:
-        ax.scatter(player[1], player[0], c='red', s=100, label="Red Team")
+    # Menambahkan 11 pemain merah dengan nomor
+    for idx, player in enumerate(red_players):
+        ax.scatter(player[1], player[0], c='red', s=100)
+        ax.text(player[1], player[0], str(idx+1), color='white', ha='center', va='center', fontsize=10, weight='bold')
 
     # Menambahkan bola
     ax.scatter(ball_position[1], ball_position[0], c='white', s=200, marker='o', label="Ball")
