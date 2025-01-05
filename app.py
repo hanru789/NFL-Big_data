@@ -19,14 +19,17 @@ def draw_field():
     )
 
     # Garis-garis lapangan
-    for y in range(0, field_width + 1, 10):
+    y_step = 10
+    for y in range(0, int(field_width) + 1, y_step):  # Iterasi untuk garis horizontal
         fig.add_shape(
             type="line",
             x0=0, y0=y,
             x1=field_length, y1=y,
             line=dict(color="white", width=2)
         )
-    for x in range(0, field_length + 1, 10):
+    
+    x_step = 10
+    for x in range(0, field_length + 1, x_step):  # Iterasi untuk garis vertikal
         fig.add_shape(
             type="line",
             x0=x, y0=0,
@@ -66,7 +69,6 @@ def draw_players(fig, players):
             marker=dict(size=12, color='red'),
             text=[player["name"]],
             textposition="top center",
-            draggable=True,  # Menambahkan fitur drag (perlu implementasi tambahan)
             showlegend=False
         ))
 
@@ -81,4 +83,3 @@ draw_players(fig, players)
 
 # Menampilkan plot
 st.plotly_chart(fig)
-
