@@ -102,8 +102,8 @@ def display_field():
     position_df['Yards to Go X Position'] = yards_to_go_x
 
     # Menampilkan DataFrame
-    st.write("Player and Ball Positions DataFrame:")
-    st.dataframe(position_df)
+    #st.write("Player and Ball Positions DataFrame:")
+    #st.dataframe(position_df)
 
     # Menampilkan plot
     ax.set_xlim(0, 100)
@@ -140,14 +140,16 @@ def display_field():
     data = position.to_numpy()
     data = data.reshape(1, -1)
 
-    st.write("Array:", data)
+    #st.write("Array:", data)
     
     # Menampilkan DataFrame
-    st.write("position data frame:")
+    #st.write("position data frame:")
     
-    st.dataframe(position)
+    #st.dataframe(position)
     
     st.write(data.shape)
+    st.title(f"Shape of data: {data.shape}")
+    st.title(f"Model input shape: {model.input_shape}")
     
     # melakukan prediksi
     st.write(tf.__version__)
@@ -158,8 +160,7 @@ def display_field():
         prediction = model.predict(data)
         st.write(f"Prediksi: {prediction[0]}")
 
-    st.title(f"Shape of data: {data.shape}")
-    st.title(f"Model input shape: {model.input_shape}")
+    
 
 # Menampilkan aplikasi
 if __name__ == "__main__":
