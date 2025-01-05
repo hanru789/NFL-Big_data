@@ -8,20 +8,32 @@ FIELD_HEIGHT = 1000  # Setara dengan 100 yard
 
 # Fungsi untuk menggambar lapangan NFL
 def draw_field(canvas):
-    # Menggambar lapangan
-    canvas.create_line(0, 0, FIELD_WIDTH, 0, fill="white", width=5)  # Garis atas
-    canvas.create_line(0, FIELD_HEIGHT, FIELD_WIDTH, FIELD_HEIGHT, fill="white", width=5)  # Garis bawah
-    canvas.create_line(0, 0, 0, FIELD_HEIGHT, fill="white", width=5)  # Garis kiri
-    canvas.create_line(FIELD_WIDTH, 0, FIELD_WIDTH, FIELD_HEIGHT, fill="white", width=5)  # Garis kanan
+    # Menggambar garis lapangan menggunakan path
+    canvas.create_path(
+        [(0, 0), (FIELD_WIDTH, 0)], stroke_color="white", stroke_width=5
+    )  # Garis atas
+    canvas.create_path(
+        [(0, FIELD_HEIGHT), (FIELD_WIDTH, FIELD_HEIGHT)], stroke_color="white", stroke_width=5
+    )  # Garis bawah
+    canvas.create_path(
+        [(0, 0), (0, FIELD_HEIGHT)], stroke_color="white", stroke_width=5
+    )  # Garis kiri
+    canvas.create_path(
+        [(FIELD_WIDTH, 0), (FIELD_WIDTH, FIELD_HEIGHT)], stroke_color="white", stroke_width=5
+    )  # Garis kanan
     
-    # Membuat garis tengah
-    canvas.create_line(FIELD_WIDTH // 2, 0, FIELD_WIDTH // 2, FIELD_HEIGHT, fill="white", width=2)
+    # Garis tengah
+    canvas.create_path(
+        [(FIELD_WIDTH // 2, 0), (FIELD_WIDTH // 2, FIELD_HEIGHT)], stroke_color="white", stroke_width=2
+    )
     
     # Membuat garis 10 yard
     for i in range(1, 10):
         y_pos = i * (FIELD_HEIGHT // 10)
-        canvas.create_line(0, y_pos, FIELD_WIDTH, y_pos, fill="white", width=1)
-    
+        canvas.create_path(
+            [(0, y_pos), (FIELD_WIDTH, y_pos)], stroke_color="white", stroke_width=1
+        )
+
     # Menambahkan tulisan "End Zone"
     canvas.create_text(FIELD_WIDTH // 2, 20, text="End Zone", fill="white", font=("Arial", 12, "bold"))
     canvas.create_text(FIELD_WIDTH // 2, FIELD_HEIGHT - 20, text="End Zone", fill="white", font=("Arial", 12, "bold"))
