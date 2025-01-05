@@ -8,20 +8,23 @@ FIELD_HEIGHT = 1000  # Setara dengan 100 yard
 
 # Fungsi untuk menggambar lapangan NFL
 def draw_field(canvas):
-    # Menambahkan background warna lapangan
-    canvas.create_rectangle(0, 0, FIELD_WIDTH, FIELD_HEIGHT, fill="lightgreen")
-
-    # Membuat garis-garis lapangan
-    for i in range(10, 101, 10):
-        canvas.create_line(0, i * (FIELD_HEIGHT // 100), FIELD_WIDTH, i * (FIELD_HEIGHT // 100), fill="white", width=2)
-
-    # Menambahkan garis gawang
-    canvas.create_line(0, 0, 0, FIELD_HEIGHT, fill="white", width=2)
-    canvas.create_line(FIELD_WIDTH, 0, FIELD_WIDTH, FIELD_HEIGHT, fill="white", width=2)
-
-    # Zona akhir
-    canvas.create_text(FIELD_WIDTH // 2, 15, text="End Zone", fill="white", font=("Arial", 12, "bold"))
-    canvas.create_text(FIELD_WIDTH // 2, FIELD_HEIGHT - 15, text="End Zone", fill="white", font=("Arial", 12, "bold"))
+    # Menggambar lapangan
+    canvas.create_line(0, 0, FIELD_WIDTH, 0, fill="white", width=5)  # Garis atas
+    canvas.create_line(0, FIELD_HEIGHT, FIELD_WIDTH, FIELD_HEIGHT, fill="white", width=5)  # Garis bawah
+    canvas.create_line(0, 0, 0, FIELD_HEIGHT, fill="white", width=5)  # Garis kiri
+    canvas.create_line(FIELD_WIDTH, 0, FIELD_WIDTH, FIELD_HEIGHT, fill="white", width=5)  # Garis kanan
+    
+    # Membuat garis tengah
+    canvas.create_line(FIELD_WIDTH // 2, 0, FIELD_WIDTH // 2, FIELD_HEIGHT, fill="white", width=2)
+    
+    # Membuat garis 10 yard
+    for i in range(1, 10):
+        y_pos = i * (FIELD_HEIGHT // 10)
+        canvas.create_line(0, y_pos, FIELD_WIDTH, y_pos, fill="white", width=1)
+    
+    # Menambahkan tulisan "End Zone"
+    canvas.create_text(FIELD_WIDTH // 2, 20, text="End Zone", fill="white", font=("Arial", 12, "bold"))
+    canvas.create_text(FIELD_WIDTH // 2, FIELD_HEIGHT - 20, text="End Zone", fill="white", font=("Arial", 12, "bold"))
 
 # Fungsi untuk menambahkan pemain dan bola
 def add_players_and_ball(canvas, players_positions, ball_position):
@@ -36,7 +39,6 @@ def add_players_and_ball(canvas, players_positions, ball_position):
     # Menambahkan bola
     bx, by = ball_position
     canvas.create_oval(bx-10, by-10, bx+10, by+10, fill="white")
-
 
 # Fungsi utama untuk menangani logika aplikasi
 def display_field():
