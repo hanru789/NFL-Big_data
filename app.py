@@ -22,9 +22,9 @@ def create_nfl_field():
     ax.text(2, 26.65, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
     ax.text(98, 26.65, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
 
-    # Menambahkan keterangan garis lapangan
+    # Menambahkan keterangan garis lapangan di posisi yang benar
     for i in range(1, 11):
-        ax.text(i * 10, 53.5, str(i * 10), fontsize=10, ha='center', color='white', weight='bold')
+        ax.text(i * 10, 54, str(i * 10), fontsize=10, ha='center', color='white', weight='bold')
 
     return fig, ax
 
