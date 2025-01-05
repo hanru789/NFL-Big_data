@@ -7,7 +7,7 @@ import joblib
 from tensorflow.keras.models import load_model
 
 
-model = load_model('model_test.h5')
+
 # Fungsi untuk membuat lapangan NFL
 def create_nfl_field():
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -142,10 +142,12 @@ def display_field():
     
     # Menampilkan DataFrame
     st.write("position data frame:")
-    st.write(data.shape)
+    
     st.dataframe(position)
-
+    st.write(data.shape)
+    
     # melakukan prediksi
+    model = load_model('model_test.h5')
     if st.button("Predict"):
         prediction = model.predict(data)
         st.write(f"Prediksi: {prediction[0]}")
