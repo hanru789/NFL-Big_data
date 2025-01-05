@@ -142,6 +142,7 @@ def display_field():
     
     # Menampilkan DataFrame
     st.write("position data frame:")
+    st.write(data.shape)
     st.dataframe(position)
 
     # melakukan prediksi
