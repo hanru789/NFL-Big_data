@@ -64,9 +64,8 @@ def add_yards_to_go_line(ax, yards_to_go_x):
 
 # Menampilkan lapangan dan pemain di Streamlit
 def display_field():
-
-    st.title(f"Shape of data: {data.shape}")
-    st.title(f"Model input shape: {model.input_shape}")
+    st.title("NFL Field Simulation")
+    
 
     # Input posisi untuk Blue Team di sidebar
     st.sidebar.header("Blue Team")
@@ -152,12 +151,15 @@ def display_field():
     
     # melakukan prediksi
     st.write(tf.__version__)
+    
     model = load_model('model_test.h5')
     
     if st.button("Predict"):
         prediction = model.predict(data)
         st.write(f"Prediksi: {prediction[0]}")
-        
+
+    st.title(f"Shape of data: {data.shape}")
+    st.title(f"Model input shape: {model.input_shape}")
 
 # Menampilkan aplikasi
 if __name__ == "__main__":
