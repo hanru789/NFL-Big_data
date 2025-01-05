@@ -6,3 +6,4 @@ plotly
 altair
 scikit-learn
 joblib
+tensorflow
