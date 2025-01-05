@@ -19,12 +19,13 @@ def create_nfl_field():
     ax.plot([100, 100], [0, 53.3], color='white', lw=2)
 
     # Menambahkan nama-nama area
-    ax.text(2, 26.65, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
-    ax.text(98, 26.65, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
+    ax.text(2, 26.65, 'End Zone', fontsize=12, ha='center', color='black', weight='bold')
+    ax.text(98, 26.65, 'End Zone', fontsize=12, ha='center', color='black', weight='bold')
 
     # Menambahkan keterangan garis lapangan dengan font warna hitam
-    for i in range(1, 11):
-        ax.text(i * 10, 54, str(i * 10), fontsize=10, ha='center', color='black', weight='bold')
+    y_pos = 54  # Posisi teks di luar lapangan
+    for i, label in zip(range(1, 10), [10, 20, 30, 40, 50, 40, 30, 20, 10]):
+        ax.text(i * 10, y_pos, str(label), fontsize=10, ha='center', color='black', weight='bold')
 
     return fig, ax
 
@@ -33,12 +34,12 @@ def add_players_and_ball(ax, blue_players, red_players, ball_position):
     # Menambahkan 11 pemain biru dengan nomor
     for idx, player in enumerate(blue_players):
         ax.scatter(player[1], player[0], c='blue', s=100)
-        ax.text(player[1], player[0], str(idx+1), color='black', ha='center', va='center', fontsize=10, weight='bold')
+        ax.text(player[1], player[0], str(idx+1), color='white', ha='center', va='center', fontsize=10, weight='bold')
 
     # Menambahkan 11 pemain merah dengan nomor
     for idx, player in enumerate(red_players):
         ax.scatter(player[1], player[0], c='red', s=100)
-        ax.text(player[1], player[0], str(idx+1), color='black', ha='center', va='center', fontsize=10, weight='bold')
+        ax.text(player[1], player[0], str(idx+1), color='white', ha='center', va='center', fontsize=10, weight='bold')
 
     # Menambahkan bola
     ax.scatter(ball_position[1], ball_position[0], c='white', s=200, marker='o', label="Ball")
