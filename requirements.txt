@@ -1,5 +1,4 @@
-pandas
-matplotlib
-seaborn
 streamlit
-babel
+streamlit-drawable-canvas
+matplotlib
+numpy
