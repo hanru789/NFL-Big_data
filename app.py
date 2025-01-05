@@ -1,89 +1,83 @@
 import streamlit as st
-import pandas as pd
-
-# Definisikan ukuran lapangan NFL dalam yard
-field_width_yards = 53.3  # Lebar lapangan NFL dalam yard
-field_length_yards = 100  # Panjang lapangan NFL dalam yard
-
-# Tampilan lapangan
-st.title("Lapangan NFL Interaktif")
-
-# Posisi Pemain dan Bola
-x_pos = st.number_input(
-    "Posisi X (yard)", 
-    min_value=0.0, 
-    max_value=float(field_length_yards), 
-    value=50.0, 
-    step=0.1
-)  # Tengah lapangan
-
-y_pos = st.number_input(
-    "Posisi Y (yard)", 
-    min_value=0.0, 
-    max_value=float(field_width_yards), 
-    value=26.65, 
-    step=0.1
-)  # Tengah lapangan
-
-# Konversi posisi dari yard ke piksel
-x_scale = 1000 / field_length_yards
-y_scale = 500 / field_width_yards
-
-x_px = x_pos * x_scale
-y_px = (field_width_yards - y_pos) * y_scale  # Pusat lapangan ada di bagian bawah
-
-# Tampilkan posisi pemain dan bola
-st.write(f"Posisi Pemain: X = {x_pos} yard, Y = {y_pos} yard")
-st.write(f"Posisi Pemain dalam piksel: X = {x_px} px, Y = {y_px} px")
-
-# Gambar lapangan NFL
-st.write("Lapangan NFL (Ukuran 100x53.3 yard)")
-
-# Tampilkan posisi pemain dalam lapangan (sebagai marker)
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
-fig, ax = plt.subplots(figsize=(10, 5))
+# Fungsi untuk membuat lapangan NFL
+def create_nfl_field():
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-# Gambar lapangan (garis besar)
-ax.plot([0, field_length_yards], [0, 0], color='white')  # Garis bawah
-ax.plot([0, field_length_yards], [field_width_yards, field_width_yards], color='white')  # Garis atas
-ax.plot([0, 0], [0, field_width_yards], color='white')  # Garis kiri
-ax.plot([field_length_yards, field_length_yards], [0, field_width_yards], color='white')  # Garis kanan
+    # Membuat lapangan NFL (dalam orientasi horizontal)
+    field = patches.Rectangle((0, 0), 100, 53.3, linewidth=1, edgecolor='green', facecolor='lightgreen')
+    ax.add_patch(field)
 
-# Garis yard
-for i in range(10, 101, 10):
-    ax.plot([i, i], [0, field_width_yards], color='white', linestyle='--')
-    ax.text(i, field_width_yards + 1, str(i), color='white', fontsize=12, ha='center')
+    # Membuat garis-garis lapangan
+    for i in range(1, 11):
+        ax.plot([i * 10, i * 10], [0, 53.3], color='white', lw=1)
 
-# Gambar pemain dan bola
-ax.scatter(x_pos, y_pos, color='blue', s=100, label="Pemain", zorder=5)  # Pemain
-ax.scatter(x_pos, y_pos, color='red', s=100, label="Bola", zorder=5)  # Bola
-ax.text(x_pos, y_pos + 1, 'Pemain 1', color='white', ha='center', fontsize=10)
+    # Menambahkan garis gawang
+    ax.plot([0, 0], [0, 53.3], color='white', lw=2)
+    ax.plot([100, 100], [0, 53.3], color='white', lw=2)
 
-# Set batas dan layout
-ax.set_xlim(0, field_length_yards)
-ax.set_ylim(0, field_width_yards)
-ax.set_facecolor('#006400')  # Warna lapangan NFL
-ax.set_xticks(range(0, 101, 10))
-ax.set_yticks(range(0, 54, 10))
+    # Menambahkan nama-nama area
+    ax.text(2, 26.65, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
+    ax.text(98, 26.65, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
 
-# Hapus label sumbu
-ax.set_xticklabels([])
-ax.set_yticklabels([])
+    return fig, ax
 
-# Judul dan tampilan
-ax.set_title("Lapangan NFL - Posisi Pemain dan Bola", color='white')
+# Fungsi untuk menambahkan pemain dan bola
+def add_players_and_ball(ax, blue_players, red_players, ball_position):
+    # Menambahkan 11 pemain biru dengan nomor
+    for idx, player in enumerate(blue_players):
+        ax.scatter(player[1], player[0], c='blue', s=100)
+        ax.text(player[1], player[0], str(idx+1), color='white', ha='center', va='center', fontsize=10, weight='bold')
 
-# Tampilkan gambar
-st.pyplot(fig)
+    # Menambahkan 11 pemain merah dengan nomor
+    for idx, player in enumerate(red_players):
+        ax.scatter(player[1], player[0], c='red', s=100)
+        ax.text(player[1], player[0], str(idx+1), color='white', ha='center', va='center', fontsize=10, weight='bold')
 
-# Menyimpan posisi dalam DataFrame untuk penggunaan lebih lanjut
-positions = pd.DataFrame({
-    'Pemain': ['Pemain 1'],
-    'Posisi X (yard)': [x_pos],
-    'Posisi Y (yard)': [y_pos],
-    'Posisi X (px)': [x_px],
-    'Posisi Y (px)': [y_px]
-})
+    # Menambahkan bola
+    ax.scatter(ball_position[1], ball_position[0], c='white', s=200, marker='o', label="Ball")
 
-st.write(positions)
+# Menampilkan lapangan dan pemain di Streamlit
+def display_field():
+    st.title("NFL Field Simulation")
+
+    # Input posisi untuk Blue Team di sidebar
+    st.sidebar.header("Blue Team")
+    blue_players_input = []
+    for i in range(11):
+        # Menambahkan input untuk posisi X dan Y pemain Blue Team
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
+        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=26.65, step=0.1)
+        blue_players_input.append((y_pos, x_pos))
+
+    # Input posisi untuk Red Team di sidebar
+    st.sidebar.header("Red Team")
+    red_players_input = []
+    for i in range(11):
+        # Menambahkan input untuk posisi X dan Y pemain Red Team
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Red Team)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
+        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=26.65, step=0.1)
+        red_players_input.append((y_pos, x_pos))
+
+    # Inisialisasi bola di posisi acak yang bisa diubah sesuai kebutuhan
+    ball_position = (st.sidebar.number_input("Ball Y Position", min_value=0.0, max_value=53.3, value=26.65, step=0.1),
+                     st.sidebar.number_input("Ball X Position", min_value=0.0, max_value=100.0, value=50.0, step=0.1))
+
+    # Menampilkan lapangan dan pemain di Streamlit
+    fig, ax = create_nfl_field()
+    add_players_and_ball(ax, blue_players_input, red_players_input, ball_position)
+
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 53.3)
+    ax.set_aspect('equal')
+
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    st.pyplot(fig)
+
+# Menampilkan aplikasi
+if __name__ == "__main__":
+    display_field()
