@@ -60,7 +60,7 @@ def add_players_and_ball(ax, blue_players, red_players, ball_position):
 # Fungsi untuk menambahkan garis Yards to Go
 def add_yards_to_go_line(ax, yards_to_go_x):
     ax.plot([yards_to_go_x, yards_to_go_x], [0, 50], color='orange', lw=2)
-    ax.text(yards_to_go_x, 53.5, 'Yards to Go', fontsize=9, ha='center', color='black', weight='bold')
+    ax.text(yards_to_go_x, 51, 'Yards to Go', fontsize=9, ha='center', color='black', weight='bold')
 
 # Menampilkan lapangan dan pemain di Streamlit
 def display_field():
