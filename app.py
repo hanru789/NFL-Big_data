@@ -47,28 +47,28 @@ def display_field():
     red_players = [(random.uniform(0, 53.3), random.uniform(0, 100)) for _ in range(11)]
     ball_position = (random.uniform(0, 53.3), random.uniform(0, 100))
 
-    # Pilih tim dan pemain yang ingin digerakkan
-    team_choice = st.selectbox("Choose the team", ["Blue Team", "Red Team"])
-    player_choice = st.slider("Choose a player number to move (1-11)", 1, 11)
+    # Input posisi baru untuk masing-masing pemain
+    st.header("Move Players (1-11)")
+    
+    # Input posisi untuk pemain biru
+    st.subheader("Blue Team")
+    blue_players_input = []
+    for i in range(11):
+        x_pos = st.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=53.3, value=blue_players[i][0], step=0.1)
+        y_pos = st.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=100.0, value=blue_players[i][1], step=0.1)
+        blue_players_input.append((x_pos, y_pos))
 
-    if team_choice == "Blue Team":
-        selected_player = blue_players[player_choice - 1]
-    else:
-        selected_player = red_players[player_choice - 1]
-
-    # Input posisi baru untuk pemain yang dipilih
-    new_x = st.slider("Move X position", 0, 53, int(selected_player[0]))
-    new_y = st.slider("Move Y position", 0, 100, int(selected_player[1]))
-
-    # Update posisi pemain yang dipilih
-    if team_choice == "Blue Team":
-        blue_players[player_choice - 1] = (new_x, new_y)
-    else:
-        red_players[player_choice - 1] = (new_x, new_y)
+    # Input posisi untuk pemain merah
+    st.subheader("Red Team")
+    red_players_input = []
+    for i in range(11):
+        x_pos = st.number_input(f"Player {i+1} X Position (Red Team)", min_value=0.0, max_value=53.3, value=red_players[i][0], step=0.1)
+        y_pos = st.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=100.0, value=red_players[i][1], step=0.1)
+        red_players_input.append((x_pos, y_pos))
 
     # Menampilkan lapangan dan pemain di Streamlit
     fig, ax = create_nfl_field()
-    add_players_and_ball(ax, blue_players, red_players, ball_position)
+    add_players_and_ball(ax, blue_players_input, red_players_input, ball_position)
 
     ax.set_xlim(0, 53.3)
     ax.set_ylim(0, 100)
