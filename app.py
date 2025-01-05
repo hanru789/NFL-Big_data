@@ -3,7 +3,10 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
+import joblib
 
+
+model = joblib.load('model_test.h5')
 # Fungsi untuk membuat lapangan NFL
 def create_nfl_field():
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -139,6 +142,12 @@ def display_field():
     # Menampilkan DataFrame
     st.write("position data frame:")
     st.dataframe(position)
+
+    # melakukan prediksi
+    if st.button("Predict"):
+        prediction = model.predict(data)
+        st.write(f"Prediksi: {prediction[0]}")
+        
 
 # Menampilkan aplikasi
 if __name__ == "__main__":
