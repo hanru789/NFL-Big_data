@@ -25,8 +25,10 @@ def create_nfl_field():
     ax.plot([100, 100], [0, 53.3], color='white', lw=2)
 
     # Menambahkan nama-nama area
-    ax.text(2, 26.65, 'End Zone', fontsize=12, ha='center', color='black', weight='bold')
-    ax.text(98, 26.65, 'End Zone', fontsize=12, ha='center', color='black', weight='bold')
+    ax.text(2, 26.65, 'End Zone of
+    offensive team', fontsize=12, ha='center', color='black', weight='bold')
+    ax.text(98, 26.65, 'End Zone of
+    devensive team', fontsize=12, ha='center', color='black', weight='bold')
 
     # Menambahkan keterangan garis lapangan dengan font warna hitam
     y_pos = 54  # Posisi teks di luar lapangan
