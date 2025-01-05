@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import time
 
 # Parameters for field dimensions (NFL field)
 field_width_yards = 53.3  # Width in yards
@@ -20,17 +19,58 @@ st.set_page_config(page_title="Interactive NFL Field", layout="centered")
 st.title("Interactive NFL Field")
 st.write("Move the players and the ball on the field. Save positions in yards.")
 
-# Container for the field (background image, interactive divs)
-st.markdown("""
+# Function to display the field
+def display_field(players_blue, players_red, ball):
+    # Create the field container
+    field_container = st.empty()
+    field_container.markdown("""
     <style>
-    .field { position: relative; width: 1000px; height: 500px; background-color: #006400; border: 2px solid white; border-radius: 10px; margin-bottom: 10px; }
-    .player { position: absolute; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+    .field { 
+        position: relative; 
+        width: 1000px; 
+        height: 500px; 
+        background-color: #006400; 
+        border: 2px solid white; 
+        border-radius: 10px; 
+        margin-bottom: 10px;
+    }
+    .player { 
+        position: absolute; 
+        width: 30px; 
+        height: 30px; 
+        border-radius: 50%; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+    }
     .blue { background-color: blue; }
     .red { background-color: red; }
-    .ball { position: absolute; width: 20px; height: 20px; background-color: white; border-radius: 50%; cursor: pointer; }
-    .yellow-line { position: absolute; width: 4px; background-color: yellow; height: 100%; cursor: pointer; }
+    .ball { 
+        position: absolute; 
+        width: 20px; 
+        height: 20px; 
+        background-color: white; 
+        border-radius: 50%; 
+    }
     </style>
     """, unsafe_allow_html=True)
+
+    # Display players and ball as styled elements
+    field_html = f'<div class="field">'
+    
+    # Display blue players
+    for player in players_blue:
+        field_html += f'<div class="player blue" style="left:{player["x"]}px; top:{player["y"]}px;">{player["id"]}</div>'
+
+    # Display red players
+    for player in players_red:
+        field_html += f'<div class="player red" style="left:{player["x"]}px; top:{player["y"]}px;">{player["id"]}</div>'
+
+    # Display the ball
+    field_html += f'<div class="ball" style="left:{ball["x"]}px; top:{ball["y"]}px;"></div>'
+    field_html += '</div>'
+
+    field_container.markdown(field_html, unsafe_allow_html=True)
 
 # Initialize positions for players and ball
 players_blue = [{'id': f'blue{i}', 'x': 100 + (i * 30), 'y': 50} for i in range(1, 12)]
@@ -52,13 +92,8 @@ def update_positions():
     ball['x'] = st.slider("Ball X Position", 0, field_length_px, ball['x'], key="ball_x")
     ball['y'] = st.slider("Ball Y Position", 0, field_width_px, ball['y'], key="ball_y")
     
-    # Display the field
-    st.markdown('<div class="field" id="field">', unsafe_allow_html=True)
-    for player in positions:
-        st.markdown(f'<div class="player {player["id"]}" style="left:{player["x"]}px; top:{player["y"]}px;"></div>', unsafe_allow_html=True)
-    
-    # Display the ball
-    st.markdown(f'<div class="ball" style="left:{ball["x"]}px; top:{ball["y"]}px;"></div>', unsafe_allow_html=True)
+    # Display the field with updated positions
+    display_field(players_blue, players_red, ball)
     
     # Optionally save the positions in yards
     if st.button('Save Position'):
