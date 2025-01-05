@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.graph_objects as go
 
 # Mengatur ukuran lapangan NFL
@@ -64,10 +63,10 @@ fig = draw_field()
 # Menambahkan pemain dan bola
 for _, row in player_positions.iterrows():
     fig.add_trace(go.Scatter(x=[row['x']], y=[row['y']], mode='markers', marker=dict(size=12, color='blue'),
-                             name=row['name'], customdata=row['name'], hoverinfo='text'))
+                             name=row['name'], hoverinfo='text'))  # Menghilangkan customdata
 
 fig.add_trace(go.Scatter(x=ball_position['x'], y=ball_position['y'], mode='markers', marker=dict(size=16, color='red'),
-                         name='Ball', customdata='Ball', hoverinfo='text'))
+                         name='Ball', hoverinfo='text'))  # Menghilangkan customdata
 
 # Menampilkan plot
 st.plotly_chart(fig)
@@ -87,12 +86,3 @@ st.write(player_positions)
 
 st.write("Ball Position:")
 st.write(ball_position)
-
-# Menambahkan pemain dan bola
-for _, row in player_positions.iterrows():
-    fig.add_trace(go.Scatter(x=[row['x']], y=[row['y']], mode='markers', marker=dict(size=12, color='blue'),
-                             name=row['name'], hoverinfo='text'))  # Menghilangkan customdata
-
-fig.add_trace(go.Scatter(x=ball_position['x'], y=ball_position['y'], mode='markers', marker=dict(size=16, color='red'),
-                         name='Ball', hoverinfo='text'))  # Menghilangkan customdata
-
