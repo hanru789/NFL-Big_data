@@ -138,6 +138,10 @@ def display_field():
     #position = position[['Direction', 'Yards to Go X Position']]
     position = pd.concat([position[['Direction', 'Yards to Go X Position']], x_io, y_io], axis=1)
     data = position.to_numpy()
+    # Menambahkan dimensi batch dan channel
+    data = data.reshape(1, 23, 242, 1)
+    st.write(f"Reshaped data shape: {data.shape}")
+
     #data = data.reshape(1, -1)
 
     #st.write("Array:", data)
