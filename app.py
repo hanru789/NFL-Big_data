@@ -47,8 +47,8 @@ def display_field():
     st.sidebar.header("Blue Team")
     blue_players_input = []
     for i in range(11):
-        # Menambahkan input untuk posisi X dan Y pemain Blue Team
-        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
+        # Menambahkan input untuk posisi X dan Y pemain Blue Team (X lebih kecil dari 50)
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=50.0, value=5.0, step=0.1)
         y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=26.65, step=0.1)
         blue_players_input.append((y_pos, x_pos))
 
@@ -56,8 +56,8 @@ def display_field():
     st.sidebar.header("Red Team")
     red_players_input = []
     for i in range(11):
-        # Menambahkan input untuk posisi X dan Y pemain Red Team
-        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Red Team)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
+        # Menambahkan input untuk posisi X dan Y pemain Red Team (X lebih besar dari 50)
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Red Team)", min_value=50.0, max_value=100.0, value=95.0, step=0.1)
         y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=26.65, step=0.1)
         red_players_input.append((y_pos, x_pos))
 
@@ -73,8 +73,8 @@ def display_field():
     ax.set_ylim(0, 53.3)
     ax.set_aspect('equal')
 
-    ax.set_xticks([])
-    ax.set_yticks([])
+    ax.set_xticks([])  # Menghilangkan ticks pada sumbu X
+    ax.set_yticks([])  # Menghilangkan ticks pada sumbu Y
 
     st.pyplot(fig)
 
