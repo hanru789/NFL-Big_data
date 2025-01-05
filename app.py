@@ -39,6 +39,12 @@ def add_players_and_ball(ax, blue_players, red_players, ball_position):
     # Menambahkan bola
     ax.scatter(ball_position[1], ball_position[0], c='white', s=200, marker='o', label="Ball")
 
+# Menambahkan keterangan garis lapangan
+def add_field_labels(ax):
+    labels = [10, 20, 30, 40, 50, 40, 30, 20, 10]
+    for x in labels:
+        ax.text(x, 53.0, str(x), color='white', ha='center', fontsize=12, weight='bold')
+
 # Menampilkan lapangan dan pemain di Streamlit
 def display_field():
     st.title("NFL Field Simulation")
@@ -68,6 +74,7 @@ def display_field():
     # Menampilkan lapangan dan pemain di Streamlit
     fig, ax = create_nfl_field()
     add_players_and_ball(ax, blue_players_input, red_players_input, ball_position)
+    add_field_labels(ax)  # Menambahkan keterangan garis lapangan
 
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 53.3)
