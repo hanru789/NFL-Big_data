@@ -1,53 +1,89 @@
 import streamlit as st
+import pandas as pd
 
-# Ukuran lapangan NFL dalam yard
+# Definisikan ukuran lapangan NFL dalam yard
 field_width_yards = 53.3  # Lebar lapangan NFL dalam yard
 field_length_yards = 100  # Panjang lapangan NFL dalam yard
 
-# Ukuran lapangan dalam piksel (untuk tinggi dan lebar)
-field_width_px = 500  # Lebar lapangan dalam piksel
-field_length_px = 1000  # Panjang lapangan dalam piksel
+# Tampilan lapangan
+st.title("Lapangan NFL Interaktif")
 
-# Faktor skala
-x_scale = field_length_px / field_length_yards
-y_scale = field_width_px / field_width_yards
+# Posisi Pemain dan Bola
+x_pos = st.number_input(
+    "Posisi X (yard)", 
+    min_value=0.0, 
+    max_value=float(field_length_yards), 
+    value=50.0, 
+    step=0.1
+)  # Tengah lapangan
 
-# Membuat elemen visual untuk lapangan
-st.title("Interactive NFL Field")
+y_pos = st.number_input(
+    "Posisi Y (yard)", 
+    min_value=0.0, 
+    max_value=float(field_width_yards), 
+    value=26.65, 
+    step=0.1
+)  # Tengah lapangan
 
-# Posisi X dan Y pemain atau bola
-x_pos = st.number_input("Posisi X (yard)", min_value=0.0, max_value=field_length_yards, value=50.0, step=0.1)  # Tengah lapangan
-y_pos = st.number_input("Posisi Y (yard)", min_value=0.0, max_value=field_width_yards, value=26.65, step=0.1)  # Tengah lapangan
+# Konversi posisi dari yard ke piksel
+x_scale = 1000 / field_length_yards
+y_scale = 500 / field_width_yards
 
-# Menampilkan posisi saat ini
-st.write(f"Posisi X (yard): {x_pos} | Posisi Y (yard): {y_pos}")
+x_px = x_pos * x_scale
+y_px = (field_width_yards - y_pos) * y_scale  # Pusat lapangan ada di bagian bawah
 
-# Visualisasi Lapangan NFL
-st.markdown("""
-    <div style="width: 1000px; height: 500px; background-color: #006400; border: 2px solid white; position: relative; border-radius: 10px;">
-        <!-- Garis Yard -->
-        <div style="position: absolute; top: 50%; left: 100px; width: 2px; height: 100%; background-color: white;"></div>
-        <div style="position: absolute; top: 50%; left: 200px; width: 2px; height: 100%; background-color: white;"></div>
-        <div style="position: absolute; top: 50%; left: 300px; width: 2px; height: 100%; background-color: white;"></div>
-        <div style="position: absolute; top: 50%; left: 400px; width: 2px; height: 100%; background-color: white;"></div>
-        <div style="position: absolute; top: 50%; left: 500px; width: 2px; height: 100%; background-color: white;"></div>
-        <div style="position: absolute; top: 50%; left: 600px; width: 2px; height: 100%; background-color: white;"></div>
-        <div style="position: absolute; top: 50%; left: 700px; width: 2px; height: 100%; background-color: white;"></div>
-        <div style="position: absolute; top: 50%; left: 800px; width: 2px; height: 100%; background-color: white;"></div>
-        <div style="position: absolute; top: 50%; left: 900px; width: 2px; height: 100%; background-color: white;"></div>
+# Tampilkan posisi pemain dan bola
+st.write(f"Posisi Pemain: X = {x_pos} yard, Y = {y_pos} yard")
+st.write(f"Posisi Pemain dalam piksel: X = {x_px} px, Y = {y_px} px")
 
-        <!-- Pemain Biru -->
-        <div style="position: absolute; left: {}px; top: {}px; width: 30px; height: 30px; background-color: blue; border-radius: 50%;"></div>
-        
-        <!-- Bola -->
-        <div style="position: absolute; left: 480px; top: 240px; width: 20px; height: 20px; background-color: white; border-radius: 50%;"></div>
-    </div>
-""".format(x_pos * x_scale, (field_width_yards - y_pos) * y_scale), unsafe_allow_html=True)
+# Gambar lapangan NFL
+st.write("Lapangan NFL (Ukuran 100x53.3 yard)")
 
-# Menyediakan opsi untuk menyimpan posisi
-if st.button("Save Position"):
-    st.write("Posisi disimpan.")
-    # Anda dapat menambahkan logika penyimpanan posisi ke database atau file di sini.
+# Tampilkan posisi pemain dalam lapangan (sebagai marker)
+import matplotlib.pyplot as plt
 
-# Menambahkan keterangan untuk posisi yang tersimpan
-st.write(f"Posisi yang disimpan: X = {x_pos} yard, Y = {y_pos} yard.")
+fig, ax = plt.subplots(figsize=(10, 5))
+
+# Gambar lapangan (garis besar)
+ax.plot([0, field_length_yards], [0, 0], color='white')  # Garis bawah
+ax.plot([0, field_length_yards], [field_width_yards, field_width_yards], color='white')  # Garis atas
+ax.plot([0, 0], [0, field_width_yards], color='white')  # Garis kiri
+ax.plot([field_length_yards, field_length_yards], [0, field_width_yards], color='white')  # Garis kanan
+
+# Garis yard
+for i in range(10, 101, 10):
+    ax.plot([i, i], [0, field_width_yards], color='white', linestyle='--')
+    ax.text(i, field_width_yards + 1, str(i), color='white', fontsize=12, ha='center')
+
+# Gambar pemain dan bola
+ax.scatter(x_pos, y_pos, color='blue', s=100, label="Pemain", zorder=5)  # Pemain
+ax.scatter(x_pos, y_pos, color='red', s=100, label="Bola", zorder=5)  # Bola
+ax.text(x_pos, y_pos + 1, 'Pemain 1', color='white', ha='center', fontsize=10)
+
+# Set batas dan layout
+ax.set_xlim(0, field_length_yards)
+ax.set_ylim(0, field_width_yards)
+ax.set_facecolor('#006400')  # Warna lapangan NFL
+ax.set_xticks(range(0, 101, 10))
+ax.set_yticks(range(0, 54, 10))
+
+# Hapus label sumbu
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+
+# Judul dan tampilan
+ax.set_title("Lapangan NFL - Posisi Pemain dan Bola", color='white')
+
+# Tampilkan gambar
+st.pyplot(fig)
+
+# Menyimpan posisi dalam DataFrame untuk penggunaan lebih lanjut
+positions = pd.DataFrame({
+    'Pemain': ['Pemain 1'],
+    'Posisi X (yard)': [x_pos],
+    'Posisi Y (yard)': [y_pos],
+    'Posisi X (px)': [x_px],
+    'Posisi Y (px)': [y_px]
+})
+
+st.write(positions)
