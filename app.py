@@ -64,9 +64,9 @@ def add_yards_to_go_line(ax, yards_to_go_x):
 
 # Menampilkan lapangan dan pemain di Streamlit
 def display_field():
-    st.title("NFL Field Simulation")
-    st.write(f"Shape of data: {data.shape}")
-    st.write(f"Model input shape: {model.input_shape}")
+    #st.title("NFL Field Simulation")
+    st.title(f"Shape of data: {data.shape}")
+    st.title(f"Model input shape: {model.input_shape}")
 
     # Input posisi untuk Blue Team di sidebar
     st.sidebar.header("Blue Team")
