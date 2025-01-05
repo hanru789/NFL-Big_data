@@ -108,6 +108,18 @@ def display_field():
 
     st.pyplot(fig)
 
+    position = pd.DataFrame()
+    position = position_df['Yards to Go X Position', 'X Position', 'Y Position']
+    position['Direction'] = 1
+    position = position['Direction', 'Yards to Go X Position', 'X Position', 'Y Position']
+    position['X Position'] = position['X Position'] + 10
+    position['Yards to Go X Position'] = position['Yards to Go X Position'] + 10
+    position['Yards to Go X Position'] = position['Yards to Go X Position'] - position['X Position'][22]
+
+    # Menampilkan DataFrame
+    st.write("position data frame:")
+    st.dataframe(position)
+
 # Menampilkan aplikasi
 if __name__ == "__main__":
     display_field()
