@@ -1,88 +1,70 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import random
+from streamlit_drawable_canvas import st_canvas
+import numpy as np
 
-# Fungsi untuk membuat lapangan NFL
-def create_nfl_field():
-    fig, ax = plt.subplots(figsize=(10, 6))
+# Ukuran lapangan NFL (dalam pixel)
+FIELD_WIDTH = 533  # Setara dengan 53.3 yard
+FIELD_HEIGHT = 1000  # Setara dengan 100 yard
 
-    # Membuat lapangan NFL
-    field = patches.Rectangle((0, 0), 53.3, 100, linewidth=1, edgecolor='green', facecolor='lightgreen')
-    ax.add_patch(field)
+# Fungsi untuk menggambar lapangan NFL
+def draw_field(canvas):
+    # Menambahkan background warna lapangan
+    canvas.create_rectangle(0, 0, FIELD_WIDTH, FIELD_HEIGHT, fill="lightgreen")
 
     # Membuat garis-garis lapangan
-    for i in range(1, 11):
-        ax.plot([0, 53.3], [i * 10, i * 10], color='white', lw=1)
+    for i in range(10, 101, 10):
+        canvas.create_line(0, i * (FIELD_HEIGHT // 100), FIELD_WIDTH, i * (FIELD_HEIGHT // 100), fill="white", width=2)
 
     # Menambahkan garis gawang
-    ax.plot([0, 0], [0, 100], color='white', lw=2)
-    ax.plot([53.3, 53.3], [0, 100], color='white', lw=2)
+    canvas.create_line(0, 0, 0, FIELD_HEIGHT, fill="white", width=2)
+    canvas.create_line(FIELD_WIDTH, 0, FIELD_WIDTH, FIELD_HEIGHT, fill="white", width=2)
 
-    # Menambahkan nama-nama area
-    ax.text(26.65, 2, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
-    ax.text(26.65, 98, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
-
-    return fig, ax
+    # Zona akhir
+    canvas.create_text(FIELD_WIDTH // 2, 15, text="End Zone", fill="white", font=("Arial", 12, "bold"))
+    canvas.create_text(FIELD_WIDTH // 2, FIELD_HEIGHT - 15, text="End Zone", fill="white", font=("Arial", 12, "bold"))
 
 # Fungsi untuk menambahkan pemain dan bola
-def add_players_and_ball(ax, player_positions, ball_position):
-    # Menambahkan 11 pemain biru
-    for pos in player_positions['blue']:
-        ax.scatter(pos[0], pos[1], c='blue', s=100)
+def add_players_and_ball(canvas, players_positions, ball_position):
+    # Menambahkan pemain biru
+    for (x, y) in players_positions['blue']:
+        canvas.create_oval(x-20, y-20, x+20, y+20, fill="blue")
 
-    # Menambahkan 11 pemain merah
-    for pos in player_positions['red']:
-        ax.scatter(pos[0], pos[1], c='red', s=100)
+    # Menambahkan pemain merah
+    for (x, y) in players_positions['red']:
+        canvas.create_oval(x-20, y-20, x+20, y+20, fill="red")
 
     # Menambahkan bola
-    ax.scatter(ball_position[0], ball_position[1], c='white', s=200, marker='o')
+    bx, by = ball_position
+    canvas.create_oval(bx-10, by-10, bx+10, by+10, fill="white")
 
-# Fungsi untuk menggerakkan objek
-def move_object(initial_position, new_position):
-    return (new_position[0], new_position[1])
 
-# Menampilkan lapangan dan pemain di Streamlit
+# Fungsi utama untuk menangani logika aplikasi
 def display_field():
-    st.title("NFL Field Simulation")
+    st.title("NFL Field Simulation with Draggable Players and Ball")
 
-    # Inisialisasi posisi pemain dan bola
-    if 'player_positions' not in st.session_state:
-        st.session_state.player_positions = {
-            'blue': [(random.uniform(0, 53.3), random.uniform(0, 100)) for _ in range(11)],
-            'red': [(random.uniform(0, 53.3), random.uniform(0, 100)) for _ in range(11)]
-        }
-    
-    if 'ball_position' not in st.session_state:
-        st.session_state.ball_position = (random.uniform(0, 53.3), random.uniform(0, 100))
+    # Setup canvas
+    canvas = st_canvas(
+        fill_color="lightgreen",  # Warna lapangan
+        stroke_width=2,
+        width=FIELD_WIDTH,
+        height=FIELD_HEIGHT,
+        drawing_mode="freedraw",  # Membuat objek bisa digambar
+        key="canvas",
+        display_toolbar=False,
+    )
 
-    # Memasukkan kontrol untuk gerakan pemain dan bola
-    st.sidebar.header('Move Players or Ball')
-    selected_object = st.sidebar.radio('Select Object', ['Blue Players', 'Red Players', 'Ball'])
-    
-    move_x = st.sidebar.slider('Move X position', 0.0, 53.3, st.session_state.ball_position[0] if selected_object == 'Ball' else st.session_state.player_positions['blue'][0][0])
-    move_y = st.sidebar.slider('Move Y position', 0.0, 100.0, st.session_state.ball_position[1] if selected_object == 'Ball' else st.session_state.player_positions['blue'][0][1])
+    # Posisi awal pemain dan bola
+    initial_positions = {
+        'blue': [(100, 100), (150, 100), (200, 100), (250, 100), (300, 100), (350, 100), (400, 100), (450, 100), (500, 100), (550, 100), (600, 100)],
+        'red': [(100, 900), (150, 900), (200, 900), (250, 900), (300, 900), (350, 900), (400, 900), (450, 900), (500, 900), (550, 900), (600, 900)],
+    }
+    ball_position = (FIELD_WIDTH // 2, FIELD_HEIGHT // 2)
 
-    # Update posisi objek
-    if selected_object == 'Ball':
-        st.session_state.ball_position = (move_x, move_y)
-    elif selected_object == 'Blue Players':
-        st.session_state.player_positions['blue'][0] = (move_x, move_y)
-    elif selected_object == 'Red Players':
-        st.session_state.player_positions['red'][0] = (move_x, move_y)
+    # Gambar lapangan NFL
+    draw_field(canvas)
 
-    # Membuat lapangan dan menambahkan objek
-    fig, ax = create_nfl_field()
-    add_players_and_ball(ax, st.session_state.player_positions, st.session_state.ball_position)
-
-    ax.set_xlim(0, 53.3)
-    ax.set_ylim(0, 100)
-    ax.set_aspect('equal')
-
-    ax.set_xticks([])
-    ax.set_yticks([])
-
-    st.pyplot(fig)
+    # Gambar pemain dan bola
+    add_players_and_ball(canvas, initial_positions, ball_position)
 
 # Menampilkan aplikasi
 if __name__ == "__main__":
