@@ -135,10 +135,10 @@ def display_field():
     x_io = pd.DataFrame(x_io, columns=[f'x_{i}' for i in range_values])
     y_io = pd.DataFrame(y_io, columns=[f'y_{i}' for i in range_values])
 
-    position = position[['Direction', 'Yards to Go X Position']]
-    position = pd.concat([position, x_io, y_io], axis=1)
+    #position = position[['Direction', 'Yards to Go X Position']]
+    position = pd.concat([position[['Direction', 'Yards to Go X Position']], x_io, y_io], axis=1)
     data = position.to_numpy()
-    data = data.reshape(1, -1)
+    #data = data.reshape(1, -1)
 
     #st.write("Array:", data)
     
@@ -148,8 +148,8 @@ def display_field():
     #st.dataframe(position)
     
     st.write(data.shape)
-    st.title(f"Shape of data: {data.shape}")
-    st.title(f"Model input shape: {model.input_shape}")
+    st.write(f"Shape of data: {data.shape}")
+    st.write(f"Model input shape: {model.input_shape}")
     
     # melakukan prediksi
     st.write(tf.__version__)
