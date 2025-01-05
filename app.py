@@ -2,6 +2,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
 
 # Fungsi untuk membuat lapangan NFL
 def create_nfl_field():
@@ -114,6 +115,26 @@ def display_field():
     position['Yards to Go X Position'] = position['Yards to Go X Position'] + 10
     position['Yards to Go X Position'] = position['Yards to Go X Position'] - position['X Position'].iloc[22]
     position = position[['Direction', 'Yards to Go X Position', 'X Position', 'Y Position']]
+
+    position['X Position'] = position['X Position'].astype(int)
+    position['Y Position'] = position['Y Position'].astype(int)
+
+    
+    range_values = list(range(0,120))
+    encoder = OneHotEncoder(categories=[range_values], sparse_output=False)
+#Encode 'x' and 'y' columns
+    x_io = encoder.fit_transform(position['X Position'].values.reshape(-1, 1))
+    y_io = encoder.fit_transform(position['Y Position'].values.reshape(-1, 1))
+
+# Convert to DataFrame for better readability
+    x_io = pd.DataFrame(x_io, columns=[f'x_{i}' for i in range_values])
+    y_io = pd.DataFrame(y_io, columns=[f'y_{i}' for i in range_values])
+
+    position = position[['Direction', 'Yards to Go X Position']]
+    position = pd.concat([position, x_io, y_io], axis=1)
+    data = position.to_numpy()
+
+st.write("Array:", data)
     
     # Menampilkan DataFrame
     st.write("position data frame:")
