@@ -153,7 +153,7 @@ def display_field():
     # melakukan prediksi 
     # Load model
     model = load_model('model_test.h5')
-    st.write(f"Model input shape: {model.input_shape}")
+    #st.write(f"Model input shape: {model.input_shape}")
 
     # Prediksi
     if st.button("Predict"):
