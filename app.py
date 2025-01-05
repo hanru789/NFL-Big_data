@@ -4,9 +4,10 @@ import matplotlib.patches as patches
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 import joblib
+from tensorflow.keras.models import lod_model
 
 
-model = joblib.load('model_test.h5')
+model = load_model('model_test.h5')
 # Fungsi untuk membuat lapangan NFL
 def create_nfl_field():
     fig, ax = plt.subplots(figsize=(10, 6))
