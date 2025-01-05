@@ -1,116 +1,59 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import random
 
-# Parameters for field dimensions (NFL field)
-field_width_yards = 53.3  # Width in yards
-field_length_yards = 100  # Length in yards
-field_width_px = 500  # Width in pixels
-field_length_px = 1000  # Length in pixels
+# Fungsi untuk membuat lapangan NFL
+def create_nfl_field():
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-# Scale factors to convert pixel positions to yards
-x_scale = field_length_px / field_length_yards
-y_scale = field_width_px / field_width_yards
+    # Membuat lapangan NFL
+    field = patches.Rectangle((0, 0), 53.3, 100, linewidth=1, edgecolor='green', facecolor='lightgreen')
+    ax.add_patch(field)
 
-# Streamlit page configuration
-st.set_page_config(page_title="Interactive NFL Field", layout="centered")
+    # Membuat garis-garis lapangan
+    for i in range(1, 11):
+        ax.plot([0, 53.3], [i * 10, i * 10], color='white', lw=1)
 
-# Title and description
-st.title("Interactive NFL Field")
-st.write("Move the players and the ball on the field. Save positions in yards.")
+    # Menambahkan garis gawang
+    ax.plot([0, 0], [0, 100], color='white', lw=2)
+    ax.plot([53.3, 53.3], [0, 100], color='white', lw=2)
 
-# Function to display the field
-def display_field(players_blue, players_red, ball):
-    # Create the field container
-    field_container = st.empty()
-    field_container.markdown("""
-    <style>
-    .field { 
-        position: relative; 
-        width: 1000px; 
-        height: 500px; 
-        background-color: #006400; 
-        border: 2px solid white; 
-        border-radius: 10px; 
-        margin-bottom: 10px;
-    }
-    .player { 
-        position: absolute; 
-        width: 30px; 
-        height: 30px; 
-        border-radius: 50%; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center;
-    }
-    .blue { background-color: blue; }
-    .red { background-color: red; }
-    .ball { 
-        position: absolute; 
-        width: 20px; 
-        height: 20px; 
-        background-color: white; 
-        border-radius: 50%; 
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # Menambahkan nama-nama area
+    ax.text(26.65, 2, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
+    ax.text(26.65, 98, 'End Zone', fontsize=12, ha='center', color='white', weight='bold')
 
-    # Display players and ball as styled elements
-    field_html = f'<div class="field">'
-    
-    # Display blue players
-    for player in players_blue:
-        field_html += f'<div class="player blue" style="left:{player["x"]}px; top:{player["y"]}px;">{player["id"]}</div>'
+    return fig, ax
 
-    # Display red players
-    for player in players_red:
-        field_html += f'<div class="player red" style="left:{player["x"]}px; top:{player["y"]}px;">{player["id"]}</div>'
+# Fungsi untuk menambahkan pemain dan bola
+def add_players_and_ball(ax):
+    # Menambahkan 11 pemain biru
+    for i in range(11):
+        ax.scatter(random.uniform(0, 53.3), random.uniform(0, 100), c='blue', s=100, label="Blue Team" if i == 0 else "")
 
-    # Display the ball
-    field_html += f'<div class="ball" style="left:{ball["x"]}px; top:{ball["y"]}px;"></div>'
-    field_html += '</div>'
+    # Menambahkan 11 pemain merah
+    for i in range(11):
+        ax.scatter(random.uniform(0, 53.3), random.uniform(0, 100), c='red', s=100, label="Red Team" if i == 0 else "")
 
-    field_container.markdown(field_html, unsafe_allow_html=True)
+    # Menambahkan bola
+    ax.scatter(random.uniform(0, 53.3), random.uniform(0, 100), c='white', s=200, marker='o', label="Ball")
 
-# Initialize positions for players and ball
-players_blue = [{'id': f'blue{i}', 'x': 100 + (i * 30), 'y': 50} for i in range(1, 12)]
-players_red = [{'id': f'red{i}', 'x': 100 + (i * 30), 'y': 400} for i in range(1, 12)]
-ball = {'id': 'ball', 'x': 480, 'y': 240}
+# Menampilkan lapangan dan pemain di Streamlit
+def display_field():
+    st.title("NFL Field Simulation")
 
-# Streamlit components to display interactive field
-def update_positions():
-    # Get updated positions of players and ball (use slider or text input in Streamlit to adjust positions)
-    positions = []
-    for player in players_blue + players_red:
-        positions.append({
-            'id': player['id'],
-            'x': st.slider(f"{player['id']} X Position", 0, field_length_px, player['x'], key=f"{player['id']}_x"),
-            'y': st.slider(f"{player['id']} Y Position", 0, field_width_px, player['y'], key=f"{player['id']}_y")
-        })
-    
-    # Ball position
-    ball['x'] = st.slider("Ball X Position", 0, field_length_px, ball['x'], key="ball_x")
-    ball['y'] = st.slider("Ball Y Position", 0, field_width_px, ball['y'], key="ball_y")
-    
-    # Display the field with updated positions
-    display_field(players_blue, players_red, ball)
-    
-    # Optionally save the positions in yards
-    if st.button('Save Position'):
-        positions_in_yards = []
-        for p in positions:
-            positions_in_yards.append({
-                'id': p['id'],
-                'x_yard': round(p['x'] * (field_length_yards / field_length_px), 2),
-                'y_yard': round((field_width_px - p['y']) * (field_width_yards / field_width_px), 2)
-            })
-        ball_in_yards = {'id': ball['id'], 'x_yard': round(ball['x'] * (field_length_yards / field_length_px), 2),
-                         'y_yard': round((field_width_px - ball['y']) * (field_width_yards / field_width_px), 2)}
-        positions_in_yards.append(ball_in_yards)
-        
-        # Show the saved positions in yards
-        st.write("Positions saved (in yards):")
-        st.write(pd.DataFrame(positions_in_yards))
+    fig, ax = create_nfl_field()
+    add_players_and_ball(ax)
 
-# Display the field and sliders for user input
-update_positions()
+    ax.set_xlim(0, 53.3)
+    ax.set_ylim(0, 100)
+    ax.set_aspect('equal')
+
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    st.pyplot(fig)
+
+# Menampilkan aplikasi
+if __name__ == "__main__":
+    display_field()
