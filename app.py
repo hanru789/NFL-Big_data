@@ -64,7 +64,7 @@ def add_yards_to_go_line(ax, yards_to_go_x):
 
 # Menampilkan lapangan dan pemain di Streamlit
 def display_field():
-    st.title("NFL Field Simulation")
+    st.title("AI-Training Partner")
     
 
     # Input posisi untuk Blue Team di sidebar
