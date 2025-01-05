@@ -1,7 +1,6 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import random
 
 # Fungsi untuk membuat lapangan NFL
 def create_nfl_field():
@@ -44,26 +43,27 @@ def add_players_and_ball(ax, blue_players, red_players, ball_position):
 def display_field():
     st.title("NFL Field Simulation")
 
-    # Inisialisasi posisi pemain dan bola
-    blue_players = [(random.uniform(0, 53.3), random.uniform(0, 100)) for _ in range(11)]
-    red_players = [(random.uniform(0, 53.3), random.uniform(0, 100)) for _ in range(11)]
-    ball_position = (random.uniform(0, 53.3), random.uniform(0, 100))
-
-    # Membuat sidebar untuk input Blue Team
+    # Input posisi untuk Blue Team di sidebar
     st.sidebar.header("Blue Team")
     blue_players_input = []
     for i in range(11):
-        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=100.0, value=blue_players[i][1], step=0.1)
-        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=blue_players[i][0], step=0.1)
+        # Menambahkan input untuk posisi X dan Y pemain Blue Team
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Blue Team)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
+        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Blue Team)", min_value=0.0, max_value=53.3, value=26.65, step=0.1)
         blue_players_input.append((y_pos, x_pos))
 
-    # Membuat sidebar untuk input Red Team
+    # Input posisi untuk Red Team di sidebar
     st.sidebar.header("Red Team")
     red_players_input = []
     for i in range(11):
-        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Red Team)", min_value=0.0, max_value=100.0, value=red_players[i][1], step=0.1)
-        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=red_players[i][0], step=0.1)
+        # Menambahkan input untuk posisi X dan Y pemain Red Team
+        x_pos = st.sidebar.number_input(f"Player {i+1} X Position (Red Team)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
+        y_pos = st.sidebar.number_input(f"Player {i+1} Y Position (Red Team)", min_value=0.0, max_value=53.3, value=26.65, step=0.1)
         red_players_input.append((y_pos, x_pos))
+
+    # Inisialisasi bola di posisi acak yang bisa diubah sesuai kebutuhan
+    ball_position = (st.sidebar.number_input("Ball Y Position", min_value=0.0, max_value=53.3, value=26.65, step=0.1),
+                     st.sidebar.number_input("Ball X Position", min_value=0.0, max_value=100.0, value=50.0, step=0.1))
 
     # Menampilkan lapangan dan pemain di Streamlit
     fig, ax = create_nfl_field()
