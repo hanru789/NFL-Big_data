@@ -1,87 +1,81 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from PIL import Image
-import matplotlib.pyplot as plt
+import time
 
-# Define the field dimensions (in pixels)
-field_width_yards = 53.3  # Width of the NFL field in yards
-field_length_yards = 100  # Length of the NFL field in yards
-field_width_px = 500  # Width of the field in pixels
-field_length_px = 1000  # Length of the field in pixels
+# Parameters for field dimensions (NFL field)
+field_width_yards = 53.3  # Width in yards
+field_length_yards = 100  # Length in yards
+field_width_px = 500  # Width in pixels
+field_length_px = 1000  # Length in pixels
 
-# Scale factors for converting between yards and pixels
+# Scale factors to convert pixel positions to yards
 x_scale = field_length_px / field_length_yards
 y_scale = field_width_px / field_width_yards
 
-# Function to save positions and convert from pixels to yards
-def save_positions(positions):
-    field_height_px = 500  # Height of the field in pixels
-    field_width_px = 1000  # Width of the field in pixels
+# Streamlit page configuration
+st.set_page_config(page_title="Interactive NFL Field", layout="centered")
 
-    # Convert positions from pixels to yards
-    for p in positions:
-        p['x_yard'] = round(p['x'] * (field_length_yards / field_length_px), 2)  # Convert x to yards
-        p['y_yard'] = round((field_height_px - p['y']) * (field_width_yards / field_height_px), 2)  # Convert y to yards
-
-    position_df = pd.DataFrame(positions)
-    st.write("Positions (in yards):")
-    st.write(position_df[['id', 'x_yard', 'y_yard']])
-
-# Create the NFL field interface in Streamlit
+# Title and description
 st.title("Interactive NFL Field")
+st.write("Move the players and the ball on the field. Save positions in yards.")
 
-# Create a canvas for the field (background)
-fig, ax = plt.subplots(figsize=(field_length_px / 100, field_width_px / 100))  # Size in inches
-ax.set_xlim(0, field_length_px)
-ax.set_ylim(0, field_width_px)
-ax.set_facecolor("#006400")  # Green background for the field
+# Container for the field (background image, interactive divs)
+st.markdown("""
+    <style>
+    .field { position: relative; width: 1000px; height: 500px; background-color: #006400; border: 2px solid white; border-radius: 10px; margin-bottom: 10px; }
+    .player { position: absolute; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+    .blue { background-color: blue; }
+    .red { background-color: red; }
+    .ball { position: absolute; width: 20px; height: 20px; background-color: white; border-radius: 50%; cursor: pointer; }
+    .yellow-line { position: absolute; width: 4px; background-color: yellow; height: 100%; cursor: pointer; }
+    </style>
+    """, unsafe_allow_html=True)
 
-# Draw the field lines (yard lines and center)
-for i in range(10, 110, 10):
-    ax.axvline(x=i * x_scale, color="white", linestyle="--", linewidth=1)
+# Initialize positions for players and ball
+players_blue = [{'id': f'blue{i}', 'x': 100 + (i * 30), 'y': 50} for i in range(1, 12)]
+players_red = [{'id': f'red{i}', 'x': 100 + (i * 30), 'y': 400} for i in range(1, 12)]
+ball = {'id': 'ball', 'x': 480, 'y': 240}
 
-# Draw the end zones (optional)
-ax.fill_betweenx([0, field_width_px], 0, 10 * x_scale, color="blue", alpha=0.1)
-ax.fill_betweenx([0, field_width_px], 90 * x_scale, field_length_px, color="red", alpha=0.1)
-
-# Draw the midfield line
-ax.axvline(x=50 * x_scale, color="white", linewidth=2)
-
-# Display the players and ball (as circles)
-players_blue = []
-players_red = []
-ball = []
-
-# Create interactive sliders for each player
-positions = []
-for i in range(1, 12):
-    blue_x = st.slider(f"Blue Player {i} X Position", 0, field_length_px, 100)
-    blue_y = st.slider(f"Blue Player {i} Y Position", 0, field_width_px, 50)
-    red_x = st.slider(f"Red Player {i} X Position", 0, field_length_px, 100)
-    red_y = st.slider(f"Red Player {i} Y Position", 0, field_width_px, 400)
+# Streamlit components to display interactive field
+def update_positions():
+    # Get updated positions of players and ball (use slider or text input in Streamlit to adjust positions)
+    positions = []
+    for player in players_blue + players_red:
+        positions.append({
+            'id': player['id'],
+            'x': st.slider(f"{player['id']} X Position", 0, field_length_px, player['x'], key=f"{player['id']}_x"),
+            'y': st.slider(f"{player['id']} Y Position", 0, field_width_px, player['y'], key=f"{player['id']}_y")
+        })
     
-    # Create blue player
-    ax.plot(blue_x, blue_y, 'bo', markersize=10)
-    # Create red player
-    ax.plot(red_x, red_y, 'ro', markersize=10)
+    # Ball position
+    ball['x'] = st.slider("Ball X Position", 0, field_length_px, ball['x'], key="ball_x")
+    ball['y'] = st.slider("Ball Y Position", 0, field_width_px, ball['y'], key="ball_y")
     
-    # Store the positions of the players
-    positions.append({"id": f"blue{i}", "x": blue_x, "y": blue_y})
-    positions.append({"id": f"red{i}", "x": red_x, "y": red_y})
+    # Display the field
+    st.markdown('<div class="field" id="field">', unsafe_allow_html=True)
+    for player in positions:
+        st.markdown(f'<div class="player {player["id"]}" style="left:{player["x"]}px; top:{player["y"]}px;"></div>', unsafe_allow_html=True)
+    
+    # Display the ball
+    st.markdown(f'<div class="ball" style="left:{ball["x"]}px; top:{ball["y"]}px;"></div>', unsafe_allow_html=True)
+    
+    # Optionally save the positions in yards
+    if st.button('Save Position'):
+        positions_in_yards = []
+        for p in positions:
+            positions_in_yards.append({
+                'id': p['id'],
+                'x_yard': round(p['x'] * (field_length_yards / field_length_px), 2),
+                'y_yard': round((field_width_px - p['y']) * (field_width_yards / field_width_px), 2)
+            })
+        ball_in_yards = {'id': ball['id'], 'x_yard': round(ball['x'] * (field_length_yards / field_length_px), 2),
+                         'y_yard': round((field_width_px - ball['y']) * (field_width_yards / field_width_px), 2)}
+        positions_in_yards.append(ball_in_yards)
+        
+        # Show the saved positions in yards
+        st.write("Positions saved (in yards):")
+        st.write(pd.DataFrame(positions_in_yards))
 
-# Create the ball
-ball_x = st.slider("Ball X Position", 0, field_length_px, 480)
-ball_y = st.slider("Ball Y Position", 0, field_width_px, 240)
-ax.plot(ball_x, ball_y, 'wo', markersize=15)  # White ball
-
-# Create the yellow vertical line
-yellow_line_x = st.slider("Yellow Line X Position", 0, field_length_px, 500)
-ax.plot([yellow_line_x, yellow_line_x], [0, field_width_px], 'y-', linewidth=4)  # Yellow line
-
-# Save button to record positions
-if st.button("Save Player Positions"):
-    save_positions(positions)
-
-# Display the field
-st.pyplot(fig)
+# Display the field and sliders for user input
+update_positions()
