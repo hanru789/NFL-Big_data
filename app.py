@@ -134,7 +134,7 @@ def display_field():
     position = pd.concat([position, x_io, y_io], axis=1)
     data = position.to_numpy()
 
-st.write("Array:", data)
+    st.write("Array:", data)
     
     # Menampilkan DataFrame
     st.write("position data frame:")
