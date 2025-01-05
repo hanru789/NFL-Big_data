@@ -140,16 +140,16 @@ def display_field():
     data = position.to_numpy()
     # Menambahkan dimensi batch dan channel
     data = data.reshape(1, 23, 242, 1)
-    st.write(f"Reshaped data shape: {data.shape}")
+    #st.write(f"Reshaped data shape: {data.shape}")
     #data = data.reshape(1, -1)
     #st.write("Array:", data)
     # Menampilkan DataFrame
     #st.write("position data frame:")
     #st.dataframe(position)
-    st.write(data.shape)
-    st.write(f"Shape of data: {data.shape}")
-    model = load_model('model_test.h5')
-    st.write(f"Model input shape: {model.input_shape}")
+    #st.write(data.shape)
+    #st.write(f"Shape of data: {data.shape}")
+    #model = load_model('model_test.h5')
+    #st.write(f"Model input shape: {model.input_shape}")
     # melakukan prediksi 
     # Load model
     model = load_model('model_test.h5')
@@ -159,7 +159,7 @@ def display_field():
     if st.button("Predict"):
         try:
             prediction = model.predict(data)
-            st.write(f"Prediksi: {prediction[0]}")
+            st.write(f"The winning probability of Blue team is : {prediction[0]}")
         except Exception as e:
             st.error(f"Prediction failed: {str(e)}")
 
